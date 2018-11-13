@@ -1,0 +1,11 @@
+﻿-- Script Date: 11/13/2018 9:08 AM  - ErikEJ.SqlCeScripting version 3.5.2.75
+CREATE TABLE [Desk] (
+  [DeskId] int IDENTITY (1,1)  NOT NULL
+, [Width] int  NOT NULL
+, [Height] int  NOT NULL
+, [SurfaceMaterial] int  NOT NULL
+, [SurfaceArea] int  NOT NULL
+);
+GO
+ALTER TABLE [Desk] ADD CONSTRAINT [PK_Desk] PRIMARY KEY ([DeskId]);
+GO
