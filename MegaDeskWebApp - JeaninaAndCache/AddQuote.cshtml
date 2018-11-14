@@ -1,9 +1,109 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+﻿@*@using MegaDesk_Web_Application.AppCode;*@
+@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "Add a Quote";
 
-</body>
-</html>
+    // Required fields validation
+    Validation.RequireField("name", "You must enter a customer name");
+    Validation.RequireField("depth", "Depth is required");
+    Validation.RequireField("width", "Width is required");
+    Validation.RequireField("drawerCount", "Drawer Count is required");
+
+    //Data type validation
+    Validation.Add("depth", Validator.Integer("Depth must be an integer"));
+    Validation.Add("width", Validator.Integer("Width must be an integer"));
+    Validation.Add("drawerCount", Validator.Integer("Drawer Count must be an integer"));
+
+    var name = "";
+    var depth = 0;
+    var width = 0;
+    var drawerCount = 0;
+    var material = "";
+    var rushDays = "";
+    var total = 0;
+
+    //Get current date and convert to sql server format and as and string
+    DateTime myDateTime = DateTime.Now;
+    string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+    if (IsPost && Validation.IsValid())
+    {
+        name = Request.Form["Name"];
+        depth = Convert.ToInt32(Request.Form["Depth"]);
+        width = Convert.ToInt32(Request.Form["Width"]);
+        drawerCount = Convert.ToInt32(Request.Form["DrawerCount"]);
+        material = Request.Form["Material"];
+        rushDays = Request.Form["RushDays"];
+       // DeskQuote quote = new DeskQuote();
+       // total = quote.CalcTotalCost(width, depth, drawerCount, rushDays, material);
+
+        var db = Database.Open("QuoteDatabase");
+        var insertCommand = "INSERT INTO QuoteTable (Date, CustomerName, Depth, Width, DrawerCount, Material, RushDays, Total) VALUES(@0, @1, @2, @3, @4, @5, @6, @7)";
+        db.Execute(insertCommand, sqlFormattedDate, name, depth, width, drawerCount, material, rushDays, total);
+
+        Response.Redirect("~/Home");
+    }
+}
+
+
+<h2>Add a Quote</h2>
+@Html.ValidationSummary()
+<form method="post">
+    <fieldset>
+        <legend>Mega Desk Information</legend>
+
+        <p>
+            <label for="name">Customer Name:</label>
+            <input type="text" id="name" name="name" value="@Request.Form["Name"]" />
+            @Html.ValidationMessage("name")
+        </p>
+
+        <p>
+            <label for="depth">Depth:</label>
+            <input type="number" id="depth" name="depth" min="12" max="48" value="@Request.Form["Depth"]" />
+            @Html.ValidationMessage("depth")
+        </p>
+
+        <p>
+            <label for="width">Width:</label>
+            <input type="number" id="width" name="width" min="24" max="96" value="@Request.Form["Width"]" />
+            @Html.ValidationMessage("width")
+        </p>
+
+        <p>
+            <label for="drawerCount">Drawer Count:</label>
+            <input type="number" id="drawerCount" name="drawerCount" min="0" max="7" value="@Request.Form["DrawerCount"]" />
+            @Html.ValidationMessage("drawerCount")
+        </p>
+
+        <p>
+            <label for="material">Material:</label>
+            <select id="material" name="material" onchange="swapMaterialImage()">
+                <option>Oak</option>
+                <option>Laminate</option>
+                <option>Pine</option>
+                <option>Rosewood</option>
+                <option>Veneer</option>
+            </select>
+            <script>
+               function swapMaterialImage() {
+                   var current = document.getElementById("material").value.toLowerCase();
+                   document.getElementById("material").style.backgroundImage = "url(images/" + current + ".jpg)";
+               }
+            </script>
+        </p>
+
+        <p>
+            <label for="rushDays">Rush Days:</label>
+            <select id="rushDays" name="rushDays">
+                <option>No Rush</option>
+                <option>Three</option>
+                <option>Five</option>
+                <option>Seven</option>
+            </select>
+        </p>
+
+        <p><input type="submit" name="buttonSubmit" value="Add Quote" /></p>
+    </fieldset>
+</form>
+<p><a href="~/MainMenu">Return to Quotes</a></p>

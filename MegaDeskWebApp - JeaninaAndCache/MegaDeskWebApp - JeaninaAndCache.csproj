@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Style\w3.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -99,18 +100,20 @@
   <ItemGroup>
     <Content Include="MainMenu.cshtml" />
     <Content Include="AddQuote.cshtml" />
+    <Content Include="EditQuote.cshtml" />
+    <Content Include="DeleteQuote.cshtml" />
     <None Include="packages.config" />
-    <Content Include="SearchQuote.cshtml" />
-    <Content Include="ViewQuote.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -127,7 +130,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50578</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50578/</IISUrl>
+          <IISUrl>http://localhost:50579/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

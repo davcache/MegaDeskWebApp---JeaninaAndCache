@@ -1,0 +1,187 @@
+﻿@*@using MegaDesk_Web_Application.AppCode;*@
+@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "Edit a Quote";
+
+    var quoteId = "";
+    var name = "";
+    var depth = 0;
+    var width = 0;
+    var drawerCount = 0;
+    var material = "";
+    var rushDays = "";
+    var total = 0;
+    var oak = "";
+    var laminate = "";
+    var pine = "";
+    var rosewood = "";
+    var veneer = "";
+    var standard = "";
+    var three = "";
+    var five = "";
+    var seven = "";
+
+    DateTime myUpdatedDateTime = DateTime.Now;
+    string sqlUpdatedDate = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["Id"].IsEmpty() && Request.QueryString["Id"].IsInt())
+        {
+            quoteId = Request.QueryString["Id"];
+            var db = Database.Open("QuoteDatabase");
+            var dbCommand = "SELECT * FROM QuoteTable WHERE Id = @0";
+            var row = db.QuerySingle(dbCommand, quoteId);
+            if (row != null)
+            {
+                name = row.CustomerName;
+                depth = row.Depth;
+                width = row.Width;
+                drawerCount = row.DrawerCount;
+                material = row.Material;
+                rushDays = row.RushDays;
+
+                switch (material)
+                {
+                    case "Oak":
+                        oak = "selected";
+                        break;
+                    case "Laminate":
+                        laminate = "selected";
+                        break;
+                    case "Pine":
+                        pine = "selected";
+                        break;
+                    case "Rosewood":
+                        rosewood = "selected";
+                        break;
+                    case "Veneer":
+                        veneer = "selected";
+                        break;
+                }
+
+                switch (rushDays)
+                {
+                    case "No Rush":
+                        standard = "selected";
+                        break;
+                    case "Three":
+                        three = "selected";
+                        break;
+                    case "Five":
+                        five = "selected";
+                        break;
+                    case "Seven":
+                        seven = "selected";
+                        break;
+                }
+            }
+            else
+            {
+                Validation.AddFormError("No entry was found for that Id.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No quote was selected.");
+        }
+    }
+
+    if (IsPost)
+    {
+        // Required fields validation
+        Validation.RequireField("name", "You must enter a customer name");
+        Validation.RequireField("depth", "Depth is required");
+        Validation.RequireField("width", "Width is required");
+        Validation.RequireField("drawerCount", "Drawer Count is required");
+
+        //Data type validation
+        Validation.Add("depth", Validator.Integer("Depth must be an integer"));
+        Validation.Add("width", Validator.Integer("Width must be an integer"));
+        Validation.Add("drawerCount", Validator.Integer("Drawer Count must be an integer"));
+
+        name = Request.Form["Name"];
+        depth = Convert.ToInt32(Request.Form["Depth"]);
+        width = Convert.ToInt32(Request.Form["Width"]);
+        drawerCount = Convert.ToInt32(Request.Form["DrawerCount"]);
+        material = Request.Form["Material"];
+        rushDays = Request.Form["RushDays"];
+        quoteId = Request.Form["quoteId"];
+
+       // DeskQuote quote = new DeskQuote();
+        total = quote.CalcTotalCost(width, depth, drawerCount, rushDays, material);
+
+        if (Validation.IsValid())
+        {
+            sqlUpdatedDate = myUpdatedDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            var db = Database.Open("QuoteDatabase");
+            var updateCommand = "UPDATE QuoteTable SET Date=@0, CustomerName=@1, Depth=@2, Width=@3, DrawerCount=@4, Material=@5, RushDays=@6, Total=@7 WHERE Id=@8";
+            db.Execute(updateCommand, sqlUpdatedDate, name, depth, width, drawerCount, material, rushDays, total, quoteId);
+            Response.Redirect("~/Home");
+        }
+    }
+}
+
+<h2>Edit a Quote</h2>
+@Html.ValidationSummary()
+<form method="post">
+    <fieldset>
+        <legend>Quote Information</legend>
+
+        <p>
+            <label for="name">Customer Name:</label>
+            <input type="text" id="name" name="name" value="@name" />
+            @Html.ValidationMessage("name")
+        </p>
+
+        <p>
+            <label for="depth">Depth:</label>
+            <input type="number" id="depth" name="depth" min="12" max="48" value="@depth" />
+            @Html.ValidationMessage("depth")
+        </p>
+
+        <p>
+            <label for="width">Width:</label>
+            <input type="number" id="width" name="width" min="24" max="96" value="@width" />
+            @Html.ValidationMessage("width")
+        </p>
+
+        <p>
+            <label for="drawerCount">Drawer Count:</label>
+            <input type="number" id="drawerCount" name="drawerCount" min="0" max="7" value="@drawerCount" />
+            @Html.ValidationMessage("drawerCount")
+        </p>
+
+        <p>
+            <label for="material">Material:</label>
+            <select id="material" name="material" style="background-image: url(images/@(material.ToLower()).jpg;" onchange="swapMaterialImage()">
+                <option @oak>Oak</option>
+                <option @laminate>Laminate</option>
+                <option @pine>Pine</option>
+                <option @rosewood>Rosewood</option>
+                <option @veneer>Veneer</option>
+            </select>
+            <script>
+               function swapMaterialImage() {
+                   var current = document.getElementById("material").value.toLowerCase();
+                   document.getElementById("material").style.backgroundImage = "url(images/" + current + ".jpg)";
+               }
+            </script>
+        </p>
+
+        <p>
+            <label for="rushDays">Rush Days:</label>
+            <select id="rushDays" name="rushDays">
+                <option @standard>No Rush</option>
+                <option @three>Three</option>
+                <option @five>Five</option>
+                <option @seven>Seven</option>
+            </select>
+        </p>
+
+        <input type="hidden" name="quoteId" value="@quoteId" />
+
+        <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+    </fieldset>
+</form>
+<p><a href="~/MainMenu">Return to Quotes</a></p>
