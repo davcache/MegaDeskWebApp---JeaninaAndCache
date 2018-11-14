@@ -1,0 +1,12 @@
+﻿-- Script Date: 11/13/2018 9:28 AM  - ErikEJ.SqlCeScripting version 3.5.2.75
+CREATE TABLE [DeskQuote] (
+  [DeskQuoteId] int IDENTITY (1,1)  NOT NULL
+, [CustomerName] nvarchar(100)  NOT NULL
+, [DeskId] int  NOT NULL
+, [RushOption] int  NOT NULL
+, [FinalQuote] money NOT NULL
+, [DateAdded] datetime NOT NULL
+);
+GO
+ALTER TABLE [DeskQuote] ADD CONSTRAINT [PK_DeskQuote] PRIMARY KEY ([DeskQuoteId]);
+GO

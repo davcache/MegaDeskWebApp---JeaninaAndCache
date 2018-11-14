@@ -1,0 +1,9 @@
+﻿-- Script Date: 11/13/2018 9:16 AM  - ErikEJ.SqlCeScripting version 3.5.2.75
+CREATE TABLE [SurfaceMaterial] (
+  [SurfaceMaterialId] int IDENTITY (1,1)  NOT NULL
+, [Material] nvarchar(100)  NOT NULL
+, [Cost] money NOT NULL
+);
+GO
+ALTER TABLE [SurfaceMaterial] ADD CONSTRAINT [PK_SurfaceMaterial] PRIMARY KEY ([SurfaceMaterialId]);
+GO

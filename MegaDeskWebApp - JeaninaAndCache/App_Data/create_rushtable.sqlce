@@ -1,0 +1,11 @@
+﻿-- Script Date: 11/13/2018 9:19 AM  - ErikEJ.SqlCeScripting version 3.5.2.75
+CREATE TABLE [RushOrderRates] (
+  [RushOrderId] int IDENTITY (1,1)  NOT NULL
+, [RushOrderOption] nvarchar(100)  NOT NULL
+, [Lessthan1000Rate] money NOT NULL
+, [1000_to_2000Rate] money NOT NULL
+, [Morethan200Rate] money NOT NULL
+);
+GO
+ALTER TABLE [RushOrderRates] ADD CONSTRAINT [PK_RushOrderRates] PRIMARY KEY ([RushOrderId]);
+GO
