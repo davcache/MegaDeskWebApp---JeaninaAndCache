@@ -2,18 +2,18 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = "List Quotes";
 
-    //var db = Database.Open("QuoteDatabase");
-    //var selectCommand = "SELECT * FROM QuoteTable";
-    //var searchTerm = "";
+    var db = Database.Open("MegaDesk");
+    var selectCommand = "SELECT * FROM DeskQuote";
+    var searchTerm = "";
 
-    //if (!Request.QueryString["searchName"].IsEmpty())
-    //{
-    //    selectCommand = "SELECT * FROM QuoteTable WHERE CustomerName LIKE @0";
-    //    searchTerm = "%" + Request["searchName"] + "%";
-    //}
+    if (!Request.QueryString["searchName"].IsEmpty())
+    {
+        selectCommand = "SELECT * FROM DeskQuote WHERE CustomerName LIKE @0";
+        searchTerm = "%" + Request["searchName"] + "%";
+    }
 
-    //var selectedData = db.Query(selectCommand, searchTerm);
-    //var grid = new WebGrid(source: selectedData, defaultSort: "Date", rowsPerPage: 5);
+    var selectedData = db.Query(selectCommand, searchTerm);
+    var grid = new WebGrid(source: selectedData, defaultSort: "Date", rowsPerPage: 5);
 }
 <div id="form" style="background-image:url(http://www.woodntap.com/packages/theme_wnt/themes/woodntap/css/images/background-pattern.jpg);width:100%;height:100%">
     <h2 style="color:white">List Quotes</h2>
@@ -25,10 +25,7 @@
         </div>
     </form>
     <div>
-        @{
-            WebGrid grid = new WebGrid();
-        }
-        @*@grid.GetHtml(
+        @grid.GetHtml(
             tableStyle: "grid",
             headerStyle: "head",
             alternatingRowStyle: "alt",
@@ -42,7 +39,7 @@
                             grid.Column("Material"),
                             grid.Column("RushDays"),
                             grid.Column("Total"),
-                            grid.Column(format: @<a href="~/DeleteQuote?id=@item.Id">Delete</a>)))*@
+                            grid.Column(format: @<a href="~/DeleteQuote?id=@item.Id">Delete</a>)))
     </div>
     <p>
         <a style="color:white;" href="~/AddQuote">Add a Quote</a>

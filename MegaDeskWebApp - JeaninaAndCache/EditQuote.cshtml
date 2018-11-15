@@ -1,7 +1,7 @@
 ﻿@*@using MegaDesk_Web_Application.AppCode;*@
 @{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "Edit a Quote";
+    Page.Title = "Edit Quote";
 
     var quoteId = "";
     var name = "";
@@ -29,8 +29,8 @@
         if (!Request.QueryString["Id"].IsEmpty() && Request.QueryString["Id"].IsInt())
         {
             quoteId = Request.QueryString["Id"];
-            var db = Database.Open("QuoteDatabase");
-            var dbCommand = "SELECT * FROM QuoteTable WHERE Id = @0";
+            var db = Database.Open("MegaDesk");
+            var dbCommand = "SELECT * FROM DeskQuote WHERE Id = @0";
             var row = db.QuerySingle(dbCommand, quoteId);
             if (row != null)
             {
@@ -108,16 +108,17 @@
         rushDays = Request.Form["RushDays"];
         quoteId = Request.Form["quoteId"];
 
-       // DeskQuote quote = new DeskQuote();
-        total = quote.CalcTotalCost(width, depth, drawerCount, rushDays, material);
+        // MegaDesk quote = new MegaDesk();
+        //var quote = "";
+        //total = quote.CalcTotalCost(width, depth, drawerCount, rushDays, material);
 
         if (Validation.IsValid())
         {
             sqlUpdatedDate = myUpdatedDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            var db = Database.Open("QuoteDatabase");
-            var updateCommand = "UPDATE QuoteTable SET Date=@0, CustomerName=@1, Depth=@2, Width=@3, DrawerCount=@4, Material=@5, RushDays=@6, Total=@7 WHERE Id=@8";
+            var db = Database.Open("MegaDesk");
+            var updateCommand = "UPDATE DeskQuote SET Date=@0, CustomerName=@1, Depth=@2, Width=@3, DrawerCount=@4, Material=@5, RushDays=@6, Total=@7 WHERE Id=@8";
             db.Execute(updateCommand, sqlUpdatedDate, name, depth, width, drawerCount, material, rushDays, total, quoteId);
-            Response.Redirect("~/Home");
+            Response.Redirect("~/MainMenu");
         }
     }
 }
