@@ -11,8 +11,8 @@
         if (!Request.QueryString["Id"].IsEmpty() && Request.QueryString["Id"].IsInt())
         {
             quoteId = Request.QueryString["Id"];
-            var db = Database.Open("QuoteDatabase");
-            var dbCommand = "SELECT * FROM QuoteTable WHERE Id = @0";
+            var db = Database.Open("MegaDesk");
+            var dbCommand = "SELECT * FROM DeskQuote WHERE Id = @0";
             var row = db.QuerySingle(dbCommand, quoteId);
             if (row != null)
             {
@@ -33,10 +33,10 @@
     if (IsPost && !Request["buttonDelete"].IsEmpty())
     {
         quoteId = Request.Form["quoteId"];
-        var db = Database.Open("QuoteDatabase");
-        var deleteCommand = "DELETE FROM QuoteTable WHERE Id = @0";
+        var db = Database.Open("MegaDesk");
+        var deleteCommand = "DELETE FROM DeskQuote WHERE Id = @0";
         db.Execute(deleteCommand, quoteId);
-        Response.Redirect("~/Home");
+        Response.Redirect("~/MainMenu");
     }
 }
 
