@@ -1,0 +1,4 @@
+﻿SELECT dq.CustomerName, d.Width, d.Height, d.SurfaceArea, d.NumberOfDrawers, s.Material, r.RushOrderOption, dq.FinalQuote, dq.DateAdded 
+FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId
+				  INNER JOIN SurfaceMaterial s ON d.SurfaceMaterial = s.SurfaceMaterialId
+				  INNER JOIN RushOrderRates r ON dq.RushOption = r.RushOrderId;

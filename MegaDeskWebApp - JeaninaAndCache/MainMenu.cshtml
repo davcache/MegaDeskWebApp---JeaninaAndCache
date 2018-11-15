@@ -1,19 +1,19 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "List Quotes";
+    Page.Title = "Welcome to MegaDesk";
 
-    //var db = Database.Open("QuoteDatabase");
-    //var selectCommand = "SELECT * FROM QuoteTable";
-    //var searchTerm = "";
+    var db = Database.Open("MegaDesk");
+    var selectCommand = "SELECT dq.DateAdded, dq.CustomerName, d.Height, d.Width, d.NumberOfDrawers, s.Material, r.RushOrderOption, dq.FinalQuote FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId INNER JOIN SurfaceMaterial s ON d.SurfaceMaterial = s.SurfaceMaterialId INNER JOIN RushOrderRates r ON dq.RushOption = r.RushOrderId ";
+    var searchTerm = "";
 
     //if (!Request.QueryString["searchName"].IsEmpty())
     //{
-    //    selectCommand = "SELECT * FROM QuoteTable WHERE CustomerName LIKE @0";
-    //    searchTerm = "%" + Request["searchName"] + "%";
+    //  selectCommand = "SELECT * FROM QuoteTable WHERE CustomerName LIKE @0";
+    //searchTerm = "%" + Request["searchName"] + "%";
     //}
 
-    //var selectedData = db.Query(selectCommand, searchTerm);
-    //var grid = new WebGrid(source: selectedData, defaultSort: "Date", rowsPerPage: 5);
+    var selectedData = db.Query(selectCommand, searchTerm);
+    var grid = new WebGrid(source: selectedData, defaultSort: "DateAdded", rowsPerPage: 5);
 }
 <div id="form" style="background-image:url(http://www.woodntap.com/packages/theme_wnt/themes/woodntap/css/images/background-pattern.jpg);width:100%;height:100%">
     <h2>List Quotes</h2>
@@ -25,24 +25,21 @@
         </div>
     </form>
     <div>
-        @{
-            WebGrid grid = new WebGrid();
-        }
-        @*@grid.GetHtml(
+        @grid.GetHtml(
             tableStyle: "grid",
             headerStyle: "head",
             alternatingRowStyle: "alt",
             columns: grid.Columns(
-                grid.Column(format: @<a href="~/EditQuote?id=@item.Id">Edit</a>),
-                            grid.Column("Date"),
+    @*            grid.Column(format: @<a href="~/EditQuote?id=@item.Id">Edit</a>),*@
+                            grid.Column("DateAdded", format: (item) => string.Format("{0:MM-dd-yyyy}", item.DateAdded)),
                             grid.Column("CustomerName"),
-                            grid.Column("Depth"),
+                            grid.Column("Height"),
                             grid.Column("Width"),
-                            grid.Column("DrawerCount"),
+                            grid.Column("NumberOfDrawers"),
                             grid.Column("Material"),
-                            grid.Column("RushDays"),
-                            grid.Column("Total"),
-                            grid.Column(format: @<a href="~/DeleteQuote?id=@item.Id">Delete</a>)))*@
+                            grid.Column("RushOrderOption"),
+                            grid.Column("FinalQuote")))
+   @*                         grid.Column(format: @<a href="~/DeleteQuote?id=@item.Id">Delete</a>))) *@
     </div>
     <p>
         <a href="~/AddQuote">Add a Quote</a>
