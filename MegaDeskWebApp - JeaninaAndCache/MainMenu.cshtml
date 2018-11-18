@@ -3,17 +3,17 @@
     Page.Title = "Welcome to MegaDesk";
 
     var db = Database.Open("MegaDesk");
-    var selectCommand = "SELECT dq.DateAdded, dq.CustomerName, d.Height, d.Width, d.NumberOfDrawers, s.Material, r.RushOrderOption, dq.FinalQuote FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId INNER JOIN SurfaceMaterial s ON d.SurfaceMaterial = s.SurfaceMaterialId INNER JOIN RushOrderRates r ON dq.RushOption = r.RushOrderId ";
+    var selectCommand = "SELECT dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId";
     var searchTerm = "";
 
-    //if (!Request.QueryString["searchName"].IsEmpty())
-    //{
-    //  selectCommand = "SELECT * FROM QuoteTable WHERE CustomerName LIKE @0";
-    //searchTerm = "%" + Request["searchName"] + "%";
-    //}
+    if (!Request.QueryString["searchName"].IsEmpty())
+    {
+        selectCommand = "SELECT dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId WHERE dq.CustomerName LIKE @0";
+        searchTerm = "%" + Request["searchName"] + "%";
+    }
 
     var selectedData = db.Query(selectCommand, searchTerm);
-    var grid = new WebGrid(source: selectedData, defaultSort: "DateAdded", rowsPerPage: 5);
+    var grid = new WebGrid(source: selectedData, defaultSort: "QuoteDate", rowsPerPage: 5);
 }
 
 <head>
@@ -58,14 +58,14 @@
             alternatingRowStyle: "alt",
             columns: grid.Columns(
     @*            grid.Column(format: @<a href="~/EditQuote?id=@item.Id">Edit</a>),*@
-                            grid.Column("DateAdded", format: (item) => string.Format("{0:MM-dd-yyyy}", item.DateAdded)),
                             grid.Column("CustomerName"),
-                            grid.Column("Height"),
                             grid.Column("Width"),
+                            grid.Column("Depth"),
                             grid.Column("NumberOfDrawers"),
-                            grid.Column("Material"),
-                            grid.Column("RushOrderOption"),
-                            grid.Column("FinalQuote")))
+                            grid.Column("SurfaceMaterial"),
+                            grid.Column("RushOption"),
+                            grid.Column("FinalQuote"),
+                            grid.Column("QuoteDate", format: (item) => string.Format("{0:MM-dd-yyyy}", item.QuoteDate))))
    @*                         grid.Column(format: @<a href="~/DeleteQuote?id=@item.Id">Delete</a>))) *@
     </div>
     <p>

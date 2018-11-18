@@ -1,0 +1,4 @@
+﻿-- Script Date: 11/17/2018 7:37 PM  - ErikEJ.SqlCeScripting version 3.5.2.75
+SELECT dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate
+  FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId;
+GO

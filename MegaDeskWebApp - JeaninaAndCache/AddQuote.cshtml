@@ -34,14 +34,14 @@
         drawerCount = Convert.ToInt32(Request.Form["DrawerCount"]);
         material = Request.Form["Material"];
         rushDays = Request.Form["RushDays"];
-       // DeskQuote quote = new DeskQuote();
+       // MegaDesk quote = new MegaDesk();
        // total = quote.CalcTotalCost(width, depth, drawerCount, rushDays, material);
 
-        var db = Database.Open("QuoteDatabase");
-        var insertCommand = "INSERT INTO QuoteTable (Date, CustomerName, Depth, Width, DrawerCount, Material, RushDays, Total) VALUES(@0, @1, @2, @3, @4, @5, @6, @7)";
+        var db = Database.Open("MegaDesk");
+        var insertCommand = "INSERT INTO DeskQuote (Date, CustomerName, Depth, Width, DrawerCount, Material, RushDays, Total) VALUES(@0, @1, @2, @3, @4, @5, @6, @7)";
         db.Execute(insertCommand, sqlFormattedDate, name, depth, width, drawerCount, material, rushDays, total);
 
-        Response.Redirect("~/Home");
+        Response.Redirect("~/MainMenu");
     }
 }
 
