@@ -1,4 +1,5 @@
 ﻿@*@using MegaDesk_Web_Application.AppCode;*@
+
 @{
     Layout = "~/_Layout.cshtml";
     Page.Title = "Add a Quote";
@@ -34,12 +35,31 @@
         drawerCount = Convert.ToInt32(Request.Form["DrawerCount"]);
         material = Request.Form["Material"];
         rushDays = Request.Form["RushDays"];
-       // MegaDesk quote = new MegaDesk();
-       // total = quote.CalcTotalCost(width, depth, drawerCount, rushDays, material);
+
+        Desk desk = new Desk();
+
+        desk.Width = width;
+        desk.Depth = depth;
+        desk.NumberOfDrawers = drawerCount;
+        desk.DeskMaterial = (Desk.SurfaceMaterial)Enum.Parse(typeof(Desk.SurfaceMaterial), material);
+
+        DeskQuote deskQuote = new DeskQuote();
+
+        deskQuote.Desk = desk;
+        deskQuote.CustomerName = name;
+        deskQuote.RushOption = rushDays;
+        deskQuote.QuoteDate = sqlFormattedDate;
+
+        total = deskQuote.CalcQuote();
 
         var db = Database.Open("MegaDesk");
-        var insertCommand = "INSERT INTO DeskQuote (Date, CustomerName, Depth, Width, DrawerCount, Material, RushDays, Total) VALUES(@0, @1, @2, @3, @4, @5, @6, @7)";
-        db.Execute(insertCommand, sqlFormattedDate, name, depth, width, drawerCount, material, rushDays, total);
+
+        var insertDesk = "INSERT INTO Desk (Width, Depth, NumberOfDrawers, SurfaceMaterial) VALUES(@0, @1, @2, @3)";
+        db.Execute(insertDesk, desk.Width, desk.Depth, desk.NumberOfDrawers, desk.DeskMaterial);
+        var deskID = db.GetLastInsertId();
+
+        var insertDeskQuote = "INSERT INTO DeskQuote (DeskId, CustomerName, RushOption, FinalQuote, QuoteDate) VALUES(@0, @1, @2, @3)";
+        db.Execute(insertDeskQuote, deskID, deskQuote.CustomerName, deskQuote.RushOption, total, deskQuote.QuoteDate);
 
         Response.Redirect("~/MainMenu");
     }
@@ -86,10 +106,10 @@
                 <option>Veneer</option>
             </select>
             <script>
-               function swapMaterialImage() {
-                   var current = document.getElementById("material").value.toLowerCase();
-                   document.getElementById("material").style.backgroundImage = "url(images/" + current + ".jpg)";
-               }
+                function swapMaterialImage() {
+                    var current = document.getElementById("material").value.toLowerCase();
+                    document.getElementById("material").style.backgroundImage = "url(images/" + current + ".jpg)";
+                }
             </script>
         </p>
 

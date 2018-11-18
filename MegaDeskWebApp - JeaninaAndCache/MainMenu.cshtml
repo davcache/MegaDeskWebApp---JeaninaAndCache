@@ -3,7 +3,7 @@
     Page.Title = "Welcome to MegaDesk";
 
     var db = Database.Open("MegaDesk");
-    var selectCommand = "SELECT dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId";
+    var selectCommand = "SELECT dq.DeskQuoteId, dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId";
     var searchTerm = "";
 
     if (!Request.QueryString["searchName"].IsEmpty())
@@ -57,7 +57,7 @@
             headerStyle: "head",
             alternatingRowStyle: "alt",
             columns: grid.Columns(
-    @*            grid.Column(format: @<a href="~/EditQuote?id=@item.Id">Edit</a>),*@
+                            grid.Column(format: @<a href="~/EditQuote?id=@item.DeskQuoteId">Edit</a>),
                             grid.Column("CustomerName"),
                             grid.Column("Width"),
                             grid.Column("Depth"),
@@ -65,8 +65,8 @@
                             grid.Column("SurfaceMaterial"),
                             grid.Column("RushOption"),
                             grid.Column("FinalQuote"),
-                            grid.Column("QuoteDate", format: (item) => string.Format("{0:MM-dd-yyyy}", item.QuoteDate))))
-   @*                         grid.Column(format: @<a href="~/DeleteQuote?id=@item.Id">Delete</a>))) *@
+                            grid.Column("QuoteDate", format: (item) => string.Format("{0:MM-dd-yyyy}", item.QuoteDate)),
+                            grid.Column(format: @<a href="~/DeleteQuote?id=@item.DeskQuoteId">Delete</a>))) 
     </div>
     <p>
         <a href="~/AddQuote">Add a Quote</a>
