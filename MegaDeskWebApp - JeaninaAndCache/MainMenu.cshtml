@@ -8,7 +8,7 @@
 
     if (!Request.QueryString["searchName"].IsEmpty())
     {
-        selectCommand = "SELECT dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId WHERE dq.CustomerName LIKE @0";
+        selectCommand = "SELECT dq.DeskQuoteId, dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId WHERE dq.CustomerName LIKE @0";
         searchTerm = "%" + Request["searchName"] + "%";
     }
 
@@ -22,7 +22,7 @@
         .grid {
             margin: 4px;
             border-collapse: collapse;
-            width: 600px;
+            width: 1000px;
         }
 
             .grid th, .grid td {
@@ -40,6 +40,8 @@
             background-color: #E8E8E8;
             color: #000;
         }
+
+        
     </style>
 </head>
 <div id="form">
@@ -58,14 +60,14 @@
             alternatingRowStyle: "alt",
             columns: grid.Columns(
                             grid.Column(format: @<a href="~/EditQuote?id=@item.DeskQuoteId">Edit</a>),
-                            grid.Column("CustomerName"),
+                            grid.Column("CustomerName", "Customer Name"),
                             grid.Column("Width"),
                             grid.Column("Depth"),
-                            grid.Column("NumberOfDrawers"),
-                            grid.Column("SurfaceMaterial"),
-                            grid.Column("RushOption"),
-                            grid.Column("FinalQuote"),
-                            grid.Column("QuoteDate", format: (item) => string.Format("{0:MM-dd-yyyy}", item.QuoteDate)),
+                            grid.Column("NumberOfDrawers", "Drawer Count"),
+                            grid.Column("SurfaceMaterial", "Material"),
+                            grid.Column("RushOption", "Rush Order Option"),
+                            grid.Column("FinalQuote", "Total"),
+                            grid.Column("QuoteDate", "Date", format: (item) => string.Format("{0:MM-dd-yyyy}", item.QuoteDate)),
                             grid.Column(format: @<a href="~/DeleteQuote?id=@item.DeskQuoteId">Delete</a>))) 
     </div>
     <p>

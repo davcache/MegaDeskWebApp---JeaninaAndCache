@@ -24,45 +24,45 @@
             case "3-Day Delivery":
                 if (deskSurfaceArea < 1000)
                 {
-                    
+                    rushOrderRate = 60;
                 }
                 else if (deskSurfaceArea > 1000 && deskSurfaceArea < 2000)
                 {
-                    
+                    rushOrderRate = 70;
                 }
                 else if (deskSurfaceArea > 2000)
                 {
-                    
+                    rushOrderRate = 80;
                 }
                 break;
 
             case "5-Day Delivery":
                 if (deskSurfaceArea < 1000)
                 {
-                    
+                    rushOrderRate = 40;
                 }
                 else if (deskSurfaceArea > 1000 && deskSurfaceArea < 2000)
                 {
-                   
+                    rushOrderRate = 50;
                 }
                 else if (deskSurfaceArea > 2000)
                 {
-                    
+                    rushOrderRate = 60;
                 }
                 break;
 
             case "7-Day Delivery":
                 if (deskSurfaceArea < 1000)
                 {
-                   
+                    rushOrderRate = 30;
                 }
                 else if (deskSurfaceArea > 1000 && deskSurfaceArea < 2000)
                 {
-                    
+                    rushOrderRate = 35;
                 }
                 else if (deskSurfaceArea > 2000)
                 {
-                   
+                    rushOrderRate = 40;
                 }
                 break;
 

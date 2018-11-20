@@ -58,7 +58,7 @@
         db.Execute(insertDesk, desk.Width, desk.Depth, desk.NumberOfDrawers, desk.DeskMaterial);
         var deskID = db.GetLastInsertId();
 
-        var insertDeskQuote = "INSERT INTO DeskQuote (DeskId, CustomerName, RushOption, FinalQuote, QuoteDate) VALUES(@0, @1, @2, @3)";
+        var insertDeskQuote = "INSERT INTO DeskQuote (DeskId, CustomerName, RushOption, FinalQuote, QuoteDate) VALUES(@0, @1, @2, @3, @4)";
         db.Execute(insertDeskQuote, deskID, deskQuote.CustomerName, deskQuote.RushOption, total, deskQuote.QuoteDate);
 
         Response.Redirect("~/MainMenu");
@@ -92,13 +92,13 @@
 
         <p>
             <label for="drawerCount">Drawer Count:</label>
-            <input type="number" id="drawerCount" name="drawerCount" min="0" max="7" value="@Request.Form["DrawerCount"]" />
+            <input type="number" id="drawerCount" name="drawerCount" min="0" max="7" value="@Request.Form["DrawerCount"]"  />
             @Html.ValidationMessage("drawerCount")
         </p>
 
         <p>
             <label for="material">Material:</label>
-            <select id="material" name="material" onchange="swapMaterialImage()">
+            <select id="material" name="material" onchange="swapMaterialImage()" value="@Request.Form["Material"]">
                 <option>Oak</option>
                 <option>Laminate</option>
                 <option>Pine</option>
@@ -115,11 +115,11 @@
 
         <p>
             <label for="rushDays">Rush Days:</label>
-            <select id="rushDays" name="rushDays">
-                <option>No Rush</option>
-                <option>Three</option>
-                <option>Five</option>
-                <option>Seven</option>
+            <select id="rushDays" name="rushDays" value="@Request.Form["RushDays"]">
+                <option>Standard</option>
+                <option>3-Day Delivery</option>
+                <option>5-Day Delivery</option>
+                <option>7-Day Delivery</option>
             </select>
         </p>
 

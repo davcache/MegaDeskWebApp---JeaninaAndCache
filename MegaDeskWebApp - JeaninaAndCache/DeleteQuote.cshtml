@@ -12,12 +12,12 @@
         {
             quoteId = Request.QueryString["Id"];
             var db = Database.Open("MegaDesk");
-            var dbCommand = "SELECT * FROM DeskQuote WHERE Id = @0";
+            var dbCommand = "SELECT dq.DeskQuoteId, dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId WHERE dq.DeskQuoteId = @0";
             var row = db.QuerySingle(dbCommand, quoteId);
             if (row != null)
             {
                 name = row.CustomerName;
-                total = row.Total;
+                total = row.FinalQuote;
             }
             else
             {
