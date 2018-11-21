@@ -1,7 +1,7 @@
 ﻿@*@using MegaDesk_Web_Application.AppCode;*@
 @{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "Edit Quote";
+    Page.Title = "MegaDesk - Edit Quote";
 
     var quoteId = "";
     var name = "";
@@ -144,11 +144,12 @@
     }
 }
 
-<h2>Edit a Quote</h2>
+<header class="w3-container w3-blue-grey"><h2>Edit Quote</h2></header>
+<div>
 @Html.ValidationSummary()
-<form method="post">
-    <fieldset>
-        <legend>Quote Information</legend>
+</div>
+<form method="post" class="w3-container">
+    <fieldset class="w3-card-4">
 
         <p>
             <label for="name">Customer Name:</label>
@@ -203,7 +204,7 @@
 
         <input type="hidden" name="quoteId" value="@quoteId"/>
 
-        <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+        <p><input type="submit" name="buttonSubmit" value="Submit Changes" class="w3-button w3-light-grey"/></p>
     </fieldset>
 </form>
-<p><a href="~/MainMenu">Return to Quotes</a></p>
+<p><a href="~/MainMenu"  class="w3-button w3-light-grey">Return to Quotes</a></p>

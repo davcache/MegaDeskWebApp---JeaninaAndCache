@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "Delete a Quote";
+    Page.Title = "MegaDesk - Delete a Quote";
 
     var name = "";
     var total = 0;
@@ -34,19 +34,22 @@
     {
         quoteId = Request.Form["quoteId"];
         var db = Database.Open("MegaDesk");
-        var deleteCommand = "DELETE FROM DeskQuote WHERE Id = @0";
-        db.Execute(deleteCommand, quoteId);
+        var deleteDeskQuote = "DELETE FROM DeskQuote WHERE DeskQuoteId = @0";
+        db.Execute(deleteDeskQuote, quoteId);
+
+        var deleteDesk = "DELETE FROM Desk WHERE DeskId = @0";
+        db.Execute(deleteDesk, quoteId);
+
         Response.Redirect("~/MainMenu");
     }
 }
 
-<h2>Delete a Quote</h2>
+<header class="w3-container w3-blue-grey"><h2>Delete a Quote</h2></header>
+<div>
 @Html.ValidationSummary()
-
-<form method="post">
-    <fieldset>
-        <legend>Quote Information</legend>
-
+    </div>
+<form method="post" class="w3-container">
+    <fieldset class="w3-card-4">
         <p>
             <span>Name:</span>
             <span>@name</span>
@@ -58,7 +61,7 @@
         </p>
 
         <input type="hidden" name="quoteId" value="@quoteId" />
-        <p><input type="submit" name="buttonDelete" value="Delete Quote" /></p>
+        <p><input type="submit" name="buttonDelete" value="Delete Quote" class="w3-button w3-light-grey"/></p>
     </fieldset>
 </form>
-<p><a href="~/MainMenu">Return to Quotes</a></p>
+<p><a href="~/MainMenu" class="w3-button w3-light-grey">Return to Quotes</a></p>
