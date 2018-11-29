@@ -1,7 +1,7 @@
 ﻿@*@using MegaDesk_Web_Application.AppCode;*@
 @{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "Edit Quote";
+    Page.Title = "MegaDesk - Edit Quote";
 
     var quoteId = "";
     var name = "";
@@ -26,20 +26,20 @@
 
     if (!IsPost)
     {
-        if (!Request.QueryString["Id"].IsEmpty() && Request.QueryString["Id"].IsInt())
+        if (!Request.QueryString["id"].IsEmpty() && Request.QueryString["id"].IsInt())
         {
-            quoteId = Request.QueryString["Id"];
+            quoteId = Request.QueryString["id"];
             var db = Database.Open("MegaDesk");
-            var dbCommand = "SELECT * FROM DeskQuote WHERE Id = @0";
+            var dbCommand = "SELECT dq.DeskQuoteId, dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId WHERE dq.DeskQuoteId = @0";
             var row = db.QuerySingle(dbCommand, quoteId);
             if (row != null)
             {
                 name = row.CustomerName;
                 depth = row.Depth;
                 width = row.Width;
-                drawerCount = row.DrawerCount;
-                material = row.Material;
-                rushDays = row.RushDays;
+                drawerCount = row.NumberOfDrawers;
+                material = row.SurfaceMaterial;
+                rushDays = row.RushOption;
 
                 switch (material)
                 {
@@ -62,16 +62,16 @@
 
                 switch (rushDays)
                 {
-                    case "No Rush":
+                    case "Standard":
                         standard = "selected";
                         break;
-                    case "Three":
+                    case "3-Day Delivery":
                         three = "selected";
                         break;
-                    case "Five":
+                    case "5-Day Delivery":
                         five = "selected";
                         break;
-                    case "Seven":
+                    case "7-Day Delivery":
                         seven = "selected";
                         break;
                 }
@@ -107,27 +107,49 @@
         material = Request.Form["Material"];
         rushDays = Request.Form["RushDays"];
         quoteId = Request.Form["quoteId"];
+        sqlUpdatedDate = myUpdatedDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-        // MegaDesk quote = new MegaDesk();
-        //var quote = "";
-        //total = quote.CalcTotalCost(width, depth, drawerCount, rushDays, material);
+        Desk desk = new Desk();
+
+        desk.Width = width;
+        desk.Depth = depth;
+        desk.NumberOfDrawers = drawerCount;
+        desk.DeskMaterial = (Desk.SurfaceMaterial)Enum.Parse(typeof(Desk.SurfaceMaterial), material);
+
+        DeskQuote deskQuote = new DeskQuote();
+
+        deskQuote.Desk = desk;
+        deskQuote.CustomerName = name;
+        deskQuote.RushOption = rushDays;
+        deskQuote.QuoteDate = sqlUpdatedDate;
+
+        total = deskQuote.CalcQuote();
 
         if (Validation.IsValid())
         {
+
             sqlUpdatedDate = myUpdatedDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             var db = Database.Open("MegaDesk");
-            var updateCommand = "UPDATE DeskQuote SET Date=@0, CustomerName=@1, Depth=@2, Width=@3, DrawerCount=@4, Material=@5, RushDays=@6, Total=@7 WHERE Id=@8";
-            db.Execute(updateCommand, sqlUpdatedDate, name, depth, width, drawerCount, material, rushDays, total, quoteId);
+            var updateDesk = "UPDATE Desk SET Width=@0, Depth=@1, NumberOfDrawers=@2, SurfaceMaterial=@3 WHERE DeskId = @4";
+            db.Execute(updateDesk, desk.Width, desk.Depth, desk.NumberOfDrawers, desk.DeskMaterial, quoteId);
+
+
+            var updateDeskQuote = "UPDATE DeskQuote SET CustomerName=@0, RushOption=@1, FinalQuote=@2, QuoteDate=@3 WHERE DeskQuoteId=@4";
+            db.Execute(updateDeskQuote, deskQuote.CustomerName, deskQuote.RushOption, total, deskQuote.QuoteDate, quoteId);
+
             Response.Redirect("~/MainMenu");
         }
+
+
     }
 }
 
-<h2>Edit a Quote</h2>
+<header class="w3-container w3-blue-grey"><h2>Edit Quote</h2></header>
+<div>
 @Html.ValidationSummary()
-<form method="post">
-    <fieldset>
-        <legend>Quote Information</legend>
+</div>
+<form method="post" class="w3-container">
+    <fieldset class="w3-card-4">
 
         <p>
             <label for="name">Customer Name:</label>
@@ -173,16 +195,16 @@
         <p>
             <label for="rushDays">Rush Days:</label>
             <select id="rushDays" name="rushDays">
-                <option @standard>No Rush</option>
-                <option @three>Three</option>
-                <option @five>Five</option>
-                <option @seven>Seven</option>
+                <option @standard>Standard</option>
+                <option @three>3-Day Delivery</option>
+                <option @five>5-Day Delivery </option>
+                <option @seven>7-Day Delivery</option>
             </select>
         </p>
 
-        <input type="hidden" name="quoteId" value="@quoteId" />
+        <input type="hidden" name="quoteId" value="@quoteId"/>
 
-        <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+        <p><input type="submit" name="buttonSubmit" value="Submit Changes" class="w3-button w3-light-grey"/></p>
     </fieldset>
 </form>
-<p><a href="~/MainMenu">Return to Quotes</a></p>
+<p><a href="~/MainMenu"  class="w3-button w3-light-grey">Return to Quotes</a></p>

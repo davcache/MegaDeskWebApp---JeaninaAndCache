@@ -1,47 +1,79 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "List Quotes";
+    Page.Title = "MegaDesk - Home";
 
     var db = Database.Open("MegaDesk");
-    var selectCommand = "SELECT * FROM DeskQuote";
+    var selectCommand = "SELECT dq.DeskQuoteId, dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId";
     var searchTerm = "";
 
     if (!Request.QueryString["searchName"].IsEmpty())
     {
-        selectCommand = "SELECT * FROM DeskQuote WHERE CustomerName LIKE @0";
+        selectCommand = "SELECT dq.DeskQuoteId, dq.CustomerName, d.Width, d.Depth, d.SurfaceMaterial, d.NumberOfDrawers, dq.RushOption, dq.FinalQuote, dq.QuoteDate FROM DeskQuote dq INNER JOIN Desk d ON dq.DeskId = d.DeskId WHERE dq.CustomerName LIKE @0";
         searchTerm = "%" + Request["searchName"] + "%";
     }
 
     var selectedData = db.Query(selectCommand, searchTerm);
-    var grid = new WebGrid(source: selectedData, defaultSort: "Date", rowsPerPage: 5);
+    var grid = new WebGrid(source: selectedData, defaultSort: "QuoteDate", rowsPerPage: 5);
 }
-<div id="form" style="background-image:url(https://image.freepik.com/free-photo/wood-background-texture_1421-587.jpg);width:100%;height:100%">
-    <h2>List Quotes</h2>
-    <form method="get" >
+
+<head>
+    <meta charset="utf-8" content="width=device-width" />
+    <style type="text/css">
+        .grid {
+            margin: 4px;
+            border-collapse: collapse;
+            width: 1000px;
+        }
+
+            .grid th, .grid td {
+                border: 1px solid #C0C0C0;
+                padding: 5px;
+            }
+
+        .head {
+            background-color: #E8E8E8;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .alt {
+            background-color: #E8E8E8;
+            color: #000;
+        }
+
+        
+    </style>
+</head>
+<header class="w3-container w3-blue-grey"><h2 class="w3-xxlarge w3-customfont">Welcome to MegaDesk</h2></header>
+<div id="form">
+    <br />
+    <form method="get" class="w3-container" >
         <div id="search">
-            <label id="lblSearch" for="searchName">Search by Customer Name:</label>
-            <input type="text" name="searchName" value="@Request.QueryString["searchName"]" />
-            <input type="Submit" value="Search" /><br />
+            <label for="searchName">Search by customer's name:</label><br />
+            <input type="text" name="searchName" value="@Request.QueryString["searchName"]" class="w3-input w3-border w3-third" />
+            <input type="Submit" value="Search" class="w3-button w3-light-grey"/><br />
         </div>
     </form>
+    <br />
     <div>
         @grid.GetHtml(
-            tableStyle: "grid",
+            tableStyle: "w3-table td,.w3-table th,.w3-table-all td,.w3-table-all th",
             headerStyle: "head",
-            alternatingRowStyle: "alt",
             columns: grid.Columns(
-                grid.Column(format: @<a href="~/EditQuote?id=@item.Id">Edit</a>),
-                            grid.Column("Date"),
-                            grid.Column("CustomerName"),
-                            grid.Column("Depth"),
+                            grid.Column(format: @<a href="~/EditQuote?id=@item.DeskQuoteId">Edit</a>),
+                            grid.Column("CustomerName", "Customer Name"),
                             grid.Column("Width"),
-                            grid.Column("DrawerCount"),
-                            grid.Column("Material"),
-                            grid.Column("RushDays"),
-                            grid.Column("Total"),
-                            grid.Column(format: @<a href="~/DeleteQuote?id=@item.Id">Delete</a>)))
+                            grid.Column("Depth"),
+                            grid.Column("NumberOfDrawers", "Drawer Count"),
+                            grid.Column("SurfaceMaterial", "Material"),
+                            grid.Column("RushOption", "Rush Order Option"),
+                            grid.Column("FinalQuote", "Total", format: (item) => string.Format("$"+ item.FinalQuote)),
+                            grid.Column("QuoteDate", "Date", format: (item) => string.Format("{0:MM-dd-yyyy}", item.QuoteDate)),
+                            grid.Column(format: @<a href="~/DeleteQuote?id=@item.DeskQuoteId">Delete</a>))) 
     </div>
     <p>
-        <a style="color:black" href="~/AddQuote">Add a Quote</a>
+        <div class="w3-margin-right">
+        <a href="~/AddQuote" class="w3-button w3-light-grey w3-hover-grey">Add a Quote</a>
+        </div>
     </p>
 </div>
